@@ -31,11 +31,32 @@ yarn-error.*
 *.pem
 
 # local env files
+.env
 .env*.local
 
 # typescript
 *.tsbuildinfo
 
-# generated native folders
 /ios
 /android
+
+# Screenshots and Logs
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.log
+*.txt
+*.xml
+*.csv
+*.docx
+*.pdf
+*.hprof
+*.config
+*.example
+Design/
+Uccara onboarding/
+uccara_explore_mockup.html
+uccara-other-screens-mockup.html
+uccara_dark_mode.html
+# generated native folders

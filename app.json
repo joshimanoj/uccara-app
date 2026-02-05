@@ -1,30 +1,67 @@
 {
   "expo": {
-    "name": "uccara-mobile-temp",
-    "slug": "uccara-mobile-temp",
+    "name": "Uccāra",
+    "slug": "uccara",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
+    "scheme": "uccara",
+    "backgroundColor": "#f7f5f2",
     "splash": {
-      "image": "./assets/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "image": "./assets/splash-native.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#f7f5f2"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.uccara.app",
+      "infoPlist": {
+        "UIBackgroundModes": [
+          "audio"
+        ]
+      }
     },
     "android": {
+      "package": "com.uccara.app",
+      "versionCode": 1,
+      "googleServicesFile": "./google-services.json",
+      "backgroundColor": "#f7f5f2",
+      "splash": {
+        "image": "./assets/splash-native.png",
+        "resizeMode": "cover",
+        "backgroundColor": "#f7f5f2"
+      },
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      },
-      "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+        "backgroundColor": "#6366f1"
+      }
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-apple-authentication",
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.940133623672-qjjtv11bj14qkt5eu6mcmbvokotd5one",
+          "iosClientId": "940133623672-qjjtv11bj14qkt5eu6mcmbvokotd5one.apps.googleusercontent.com"
+        }
+      ],
+      "./plugins/withAndroidSplashFix"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "3928825c-f171-4329-ba90-9ac61a35ec6b"
+      }
     }
   }
 }
