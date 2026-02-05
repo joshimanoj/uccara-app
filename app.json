@@ -36,6 +36,10 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#6366f1"
+      },
+      "navigationBar": {
+        "backgroundColor": "#f7f5f2",
+        "barStyle": "dark-content"
       }
     },
     "web": {

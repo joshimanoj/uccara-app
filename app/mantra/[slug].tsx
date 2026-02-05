@@ -340,31 +340,55 @@ export default function MantraDetailScreen() {
     return (
       <View style={styles.container}>
         {/* Focus Header */}
+        {/* Focus Header */}
         <View style={styles.focusHeader}>
-          <Text style={styles.focusTitle}>{mantra.title_primary}</Text>
-          {/* Download Button in Focus Mode */}
-          <Pressable
-            style={styles.headerButton}
-            onPress={handleDownload}
-            disabled={downloadStatus === 'downloading'}
-          >
-            {downloadStatus === 'downloading' ? (
-              <View style={styles.downloadProgress}>
-                <ActivityIndicator size="small" color={theme.colors.accent.primary} />
-              </View>
-            ) : downloadStatus === 'downloaded' ? (
-              <CheckCircleIcon
-                size={22}
-                color={theme.colors.accent.primary}
-                filled={true}
-              />
-            ) : (
-              <DownloadIcon
-                size={22}
-                color={!isOffline ? '#FFFFFF' : 'rgba(255,255,255,0.4)'}
-              />
-            )}
+          <Pressable style={styles.headerButton} onPress={handleBack}>
+            <ChevronLeftIcon size={24} color={theme.colors.text.primary} />
           </Pressable>
+
+          <Text style={styles.focusTitle}>{mantra.title_primary}</Text>
+
+          <View style={styles.focusHeaderActions}>
+            {/* Download Button */}
+            <Pressable
+              style={styles.headerButton}
+              onPress={handleDownload}
+              disabled={downloadStatus === 'downloading'}
+            >
+              {downloadStatus === 'downloading' ? (
+                <View style={styles.downloadProgress}>
+                  <ActivityIndicator size="small" color={theme.colors.accent.primary} />
+                </View>
+              ) : downloadStatus === 'downloaded' ? (
+                <CheckCircleIcon
+                  size={22}
+                  color={theme.colors.accent.primary}
+                  filled={true}
+                />
+              ) : (
+                <DownloadIcon
+                  size={22}
+                  color={!isOffline ? theme.colors.text.primary : theme.colors.text.muted}
+                />
+              )}
+            </Pressable>
+
+            {/* Bookmark Button */}
+            <Pressable
+              style={styles.headerButton}
+              onPress={handleSave}
+            >
+              <BookmarkIcon
+                size={22}
+                color={
+                  isFavorite(mantra.id)
+                    ? theme.colors.accent.primary
+                    : theme.colors.text.primary
+                }
+                filled={isFavorite(mantra.id)}
+              />
+            </Pressable>
+          </View>
         </View>
 
         {/* 3-Line Lyrics Stack */}
@@ -924,7 +948,8 @@ const createStyles = (theme: any, insets: any) =>
 
     // Focus Mode
     focusHeader: { flexDirection: 'row', alignItems: 'center', paddingTop: insets.top + 8, paddingHorizontal: 16, paddingBottom: 16 },
-    focusTitle: { fontFamily: theme.fontFamilies.primary.semiBold, fontSize: 18, color: theme.colors.text.primary, flex: 1, textAlign: 'center' },
+    focusTitle: { fontFamily: theme.fontFamilies.primary.bold, fontSize: 24, color: theme.colors.text.primary, flex: 1, textAlign: 'center' },
+    focusHeaderActions: { flexDirection: 'row', gap: 4 },
     viewAllButton: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 8, paddingHorizontal: 16, backgroundColor: theme.colors.background.elevated, borderRadius: 20 },
     viewAllText: { fontFamily: theme.fontFamilies.primary.medium, fontSize: 14, color: theme.colors.text.secondary },
 
@@ -988,7 +1013,7 @@ const createStyles = (theme: any, insets: any) =>
       right: 0,
       backgroundColor: '#000000',
       borderTopWidth: 0,
-      paddingBottom: insets.bottom + 12,
+      paddingBottom: insets.bottom + 24,
       paddingTop: 16,
       alignItems: 'center',
     },
@@ -997,7 +1022,7 @@ const createStyles = (theme: any, insets: any) =>
       fontSize: 13,
       color: 'rgba(255,255,255,0.4)',
       textAlign: 'center',
-      marginBottom: 20,
+      marginBottom: 12,
     },
     bottomBarControls: {
       flexDirection: 'row',
@@ -1005,13 +1030,13 @@ const createStyles = (theme: any, insets: any) =>
       justifyContent: 'center',
       width: '100%',
       paddingHorizontal: 20,
+      gap: 32,
     },
     bottomBarButton: {
       width: 44,
       height: 44,
       justifyContent: 'center',
       alignItems: 'center',
-      marginHorizontal: 12,
     },
     bottomBarButtonDisabled: {
       opacity: 0.3,
@@ -1023,7 +1048,6 @@ const createStyles = (theme: any, insets: any) =>
       backgroundColor: '#FFFFFF',
       justifyContent: 'center',
       alignItems: 'center',
-      marginHorizontal: 12,
       ...theme.shadows.md,
     },
     bottomBarExpand: {
