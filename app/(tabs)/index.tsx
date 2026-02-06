@@ -15,6 +15,7 @@ import {
   LayoutAnimation,
   RefreshControl,
   ActivityIndicator,
+  useWindowDimensions,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -252,7 +253,8 @@ export default function HomeScreen() {
   };
 
 
-  const styles = createStyles(theme, insets, isDark, PALETTE);
+  const { width } = useWindowDimensions();
+  const styles = createStyles(theme, insets, isDark, PALETTE, width);
 
   return (
     <View style={styles.container}>
@@ -370,40 +372,74 @@ export default function HomeScreen() {
         {/* Handpicked For You */}
         <View style={styles.section}>
           <Text style={styles.sectionLabel1}>Curated</Text>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.hScrollContent}
-            style={styles.hScroll}
-          >
-            {COLLECTIONS.map((collection) => (
-              <Pressable
-                key={collection.slug}
-                style={styles.hCard}
-                onPress={() => handleCollectionPress(collection.slug)}
-              >
-                <LinearGradient
-                  colors={collection.bgGradient as [string, string]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={[StyleSheet.absoluteFillObject, { borderRadius: 18 }]}
-                />
+          {width > 550 ? (
+            /* Tablet Grid Layout */
+            <View style={styles.gridList}>
+              {COLLECTIONS.map((collection) => (
+                <Pressable
+                  key={collection.slug}
+                  style={styles.hCard}
+                  onPress={() => handleCollectionPress(collection.slug)}
+                >
+                  <LinearGradient
+                    colors={collection.bgGradient as [string, string]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={[StyleSheet.absoluteFillObject, { borderRadius: 18 }]}
+                  />
 
-                <View style={[styles.hIcon, { backgroundColor: collection.iconColor }]}>
-                  {collection.icon === 'play' && <PlayIcon size={20} color={collection.textColor} filled />}
-                  {collection.icon === 'sparkle' && <SparklesIcon size={20} color={collection.textColor} />}
-                  {collection.icon === 'clock' && <ClockIcon size={20} color={collection.textColor} />}
-                  {collection.icon === 'arrow-up' && <ArrowUpIcon size={20} color={collection.textColor} />}
-                  {collection.icon === 'arrow-right' && <ArrowRightIcon size={20} color={collection.textColor} />}
-                </View>
+                  <View style={[styles.hIcon, { backgroundColor: collection.iconColor }]}>
+                    {collection.icon === 'play' && <PlayIcon size={20} color={collection.textColor} filled />}
+                    {collection.icon === 'sparkle' && <SparklesIcon size={20} color={collection.textColor} />}
+                    {collection.icon === 'clock' && <ClockIcon size={20} color={collection.textColor} />}
+                    {collection.icon === 'arrow-up' && <ArrowUpIcon size={20} color={collection.textColor} />}
+                    {collection.icon === 'arrow-right' && <ArrowRightIcon size={20} color={collection.textColor} />}
+                  </View>
 
-                <View>
-                  <Text style={styles.hTitle}>{collection.name}</Text>
-                  <Text style={styles.hSub}>{collection.subtitle}</Text>
-                </View>
-              </Pressable>
-            ))}
-          </ScrollView>
+                  <View>
+                    <Text style={styles.hTitle}>{collection.name}</Text>
+                    <Text style={styles.hSub}>{collection.subtitle}</Text>
+                  </View>
+                </Pressable>
+              ))}
+            </View>
+          ) : (
+            /* Mobile Horizontal Scroll */
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.hScrollContent}
+              style={styles.hScroll}
+            >
+              {COLLECTIONS.map((collection) => (
+                <Pressable
+                  key={collection.slug}
+                  style={styles.hCard}
+                  onPress={() => handleCollectionPress(collection.slug)}
+                >
+                  <LinearGradient
+                    colors={collection.bgGradient as [string, string]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={[StyleSheet.absoluteFillObject, { borderRadius: 18 }]}
+                  />
+
+                  <View style={[styles.hIcon, { backgroundColor: collection.iconColor }]}>
+                    {collection.icon === 'play' && <PlayIcon size={20} color={collection.textColor} filled />}
+                    {collection.icon === 'sparkle' && <SparklesIcon size={20} color={collection.textColor} />}
+                    {collection.icon === 'clock' && <ClockIcon size={20} color={collection.textColor} />}
+                    {collection.icon === 'arrow-up' && <ArrowUpIcon size={20} color={collection.textColor} />}
+                    {collection.icon === 'arrow-right' && <ArrowRightIcon size={20} color={collection.textColor} />}
+                  </View>
+
+                  <View>
+                    <Text style={styles.hTitle}>{collection.name}</Text>
+                    <Text style={styles.hSub}>{collection.subtitle}</Text>
+                  </View>
+                </Pressable>
+              ))}
+            </ScrollView>
+          )}
         </View>
 
         {/* Bottom Spacer to clear Absolute Tab Bar */}
@@ -413,8 +449,12 @@ export default function HomeScreen() {
   );
 }
 
-const createStyles = (theme: any, insets: any, isDark: boolean, palette: typeof LIGHT_PALETTE) =>
-  StyleSheet.create({
+const createStyles = (theme: any, insets: any, isDark: boolean, palette: typeof LIGHT_PALETTE, width: number) => {
+  // Adjusted breakpoints: > 900 for 4 columns (Landscape), > 550 for 3 columns (Portrait Tablet), else 2
+  const numColumns = width > 900 ? 4 : (width > 550 ? 3 : 2);
+  const cardWidth = (width - (spacing.layout.containerPadH * 2) - (spacing.grid.deityGap * (numColumns - 1))) / numColumns - 0.5;
+
+  return StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: palette.bg,
@@ -537,7 +577,7 @@ const createStyles = (theme: any, insets: any, isDark: boolean, palette: typeof 
       marginBottom: spacing.layout.deityGridMb,
     },
     deityCardWrapper: {
-      width: (Dimensions.get('window').width - (spacing.layout.containerPadH * 2) - (spacing.grid.deityGap * 2)) / 3,
+      width: cardWidth,
       borderRadius: 18,
       backgroundColor: palette.card,
       borderWidth: isDark ? 1 : 0,
@@ -583,7 +623,7 @@ const createStyles = (theme: any, insets: any, isDark: boolean, palette: typeof 
       opacity: 0.15,
     },
     focusCardWrapper: {
-      width: (Dimensions.get('window').width - (spacing.layout.containerPadH * 2) - (spacing.grid.deityGap * 2)) / 3,
+      width: cardWidth,
       borderRadius: 18,
       backgroundColor: palette.card,
       borderWidth: isDark ? 1 : 0,
@@ -630,7 +670,11 @@ const createStyles = (theme: any, insets: any, isDark: boolean, palette: typeof 
       gap: spacing.grid.curatedGap,
     },
     hCard: {
-      width: Math.round((Dimensions.get('window').width - spacing.layout.containerPadH - (spacing.grid.curatedGap * 2)) / 2.15),
+      width: width > 550
+        // Tablet: Same grid logic as deity cards
+        ? cardWidth
+        // Mobile: Existing logic for peeking cards
+        : Math.round((Dimensions.get('window').width - spacing.layout.containerPadH - (spacing.grid.curatedGap * 2)) / 2.15),
       height: 120,
       borderRadius: 18,
       paddingHorizontal: spacing.components.curatedCard.px,
@@ -645,6 +689,8 @@ const createStyles = (theme: any, insets: any, isDark: boolean, palette: typeof 
       shadowRadius: 16,
       elevation: 4,
       gap: 10,
+      // For tablet grid layout
+      marginBottom: width > 550 ? spacing.grid.deityGap : 0,
     },
     hIcon: {
       width: 38,
@@ -666,3 +712,4 @@ const createStyles = (theme: any, insets: any, isDark: boolean, palette: typeof 
       marginTop: -4,
     },
   });
+};

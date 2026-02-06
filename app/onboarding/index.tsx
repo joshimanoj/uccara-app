@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Pressable, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Dimensions, ScrollView } from 'react-native';
 import { router } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -66,7 +66,11 @@ export default function OnboardingScreen() {
     const styles = createStyles(theme, insets);
 
     return (
-        <View style={styles.container}>
+        <ScrollView
+            style={styles.container}
+            contentContainerStyle={styles.scrollContent}
+            showsVerticalScrollIndicator={false}
+        >
             {/* Logo */}
             <Animated.View
                 entering={FadeInUp.delay(200).springify()}
@@ -131,7 +135,7 @@ export default function OnboardingScreen() {
                     <Text style={styles.secondaryButtonText}>Already have an account? Sign In</Text>
                 </Pressable>
             </Animated.View>
-        </View>
+        </ScrollView>
     );
 }
 
@@ -143,9 +147,14 @@ const createStyles = (theme: any, insets: any) =>
             paddingTop: insets.top + 20,
             paddingBottom: insets.bottom + 20,
         },
+        scrollContent: {
+            flexGrow: 1,
+            paddingTop: insets.top,
+            paddingBottom: insets.bottom + spacing.layout.tabsMb,
+        },
         logoContainer: {
             alignItems: 'center',
-            marginTop: 20,
+            marginTop: 40,
             marginBottom: 20,
         },
         logo: {
@@ -155,10 +164,9 @@ const createStyles = (theme: any, insets: any) =>
             letterSpacing: -0.5,
         },
         content: {
-            flex: 1,
             paddingHorizontal: spacing.layout.containerPadH,
             justifyContent: 'center',
-            marginTop: -60, // Slight visual offset upwards
+            marginBottom: 40,
         },
         headline: {
             fontFamily: 'CrimsonPro_600SemiBold',
